@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蜜语 - 天然蜂蜜水产品</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- GSAP 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFD700',
+                        secondary: '#8B4513',
+                        accent: '#228B22',
+                        light: '#FFF8DC',
+                        dark: '#3E2723'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            .text-shadow-lg {
+                text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .honey-flow {
+                position: relative;
+                overflow: hidden;
+            }
+            .honey-flow::after {
+                content: '';
+                position: absolute;
+                top: -100%;
+                left: 0;
+                width: 100%;
+                height: 200%;
+                background: linear-gradient(to bottom, rgba(255, 215, 0, 0) 0%, rgba(255, 215, 0, 0.8) 50%, rgba(255, 215, 0, 0) 100%);
+                transform: rotate(15deg);
+                animation: honeyFlow 3s infinite;
+            }
+            @keyframes honeyFlow {
+                0% {
+                    top: -100%;
+                    opacity: 0;
+                }
+                50% {
+                    opacity: 0.8;
+                }
+                100% {
+                    top: 100%;
+                    opacity: 0;
+                }
+            }
+            .bottle-cap {
+                transition: transform 0.5s ease;
+            }
+            .bottle-cap:hover {
+                transform: rotate(45deg);
+            }
+            .product-card {
+                transition: all 0.3s ease;
+            }
+            .product-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .bee {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                background-size: contain;
+                background-repeat: no-repeat;
+                animation: fly 15s infinite linear;
+            }
+            @keyframes fly {
+                0% {
+                    transform: translateX(-100px) translateY(0);
+                }
+                25% {
+                    transform: translateX(calc(25vw)) translateY(-50px);
+                }
+                50% {
+                    transform: translateX(calc(50vw)) translateY(50px);
+                }
+                75% {
+                    transform: translateX(calc(75vw)) translateY(-30px);
+                }
+                100% {
+                    transform: translateX(calc(100vw + 100px)) translateY(0);
+                }
+            }
+        }
+    </style>
+</head>
+<body class="bg-light font-sans">
+    <!-- 导航栏 -->
+    <nav class="bg-white bg-opacity-90 fixed w-full z-50 shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fa fa-leaf text-accent text-2xl mr-2"></i>
+                <span class="text-2xl font-bold text-dark">蜜语</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="text-dark hover:text-secondary transition-colors">首页</a>
+                <a href="#products" class="text-dark hover:text-secondary transition-colors">产品</a>
+                <a href="#about" class="text-dark hover:text-secondary transition-colors">关于我们</a>
+                <a href="#contact" class="text-dark hover:text-secondary transition-colors">联系我们</a>
+            </div>
+            <div class="flex items-center">
+                <button id="cart-btn" class="relative p-2 text-dark hover:text-secondary transition-colors">
+                    <i class="fa fa-shopping-cart text-xl"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-primary text-dark text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+                <button class="md:hidden p-2 text-dark" id="mobile-menu-btn">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white w-full border-t">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="#home" class="text-dark hover:text-secondary transition-colors py-2">首页</a>
+                <a href="#products" class="text-dark hover:text-secondary transition-colors py-2">产品</a>
+                <a href="#about" class="text-dark hover:text-secondary transition-colors py-2">关于我们</a>
+                <a href="#contact" class="text-dark hover:text-secondary transition-colors py-2">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 购物车侧边栏 -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-80 bg-white shadow-xl transform translate-x-full transition-transform duration-300 z-50">
+        <div class="p-4 h-full flex flex-col">
+            <div class="flex justify-between items-center border-b pb-4">
+                <h2 class="text-xl font-bold text-dark">购物车</h2>
+                <button id="close-cart" class="text-dark hover:text-secondary">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="cart-items" class="flex-grow overflow-y-auto py-4">
+                <!-- 购物车商品将在这里动态添加 -->
+                <div class="text-center text-gray-500 py-8" id="empty-cart-message">
+                    <i class="fa fa-shopping-cart text-4xl mb-2"></i>
+                    <p>购物车还是空的</p>
+                </div>
+            </div>
+            <div class="border-t pt-4">
+                <div class="flex justify-between mb-4">
+                    <span class="font-bold">总计:</span>
+                    <span id="cart-total" class="font-bold">¥0.00</span>
+                </div>
+                <button id="checkout-btn" class="w-full bg-primary text-dark py-2 rounded-md hover:bg-opacity-90 transition-colors">
+                    结算
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 首页横幅 -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/b1126ca951954adf8c32e835f571ff98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=jT6aaoi6gTp3tYeb8a5kA42o4GI%3D" 
+                 alt="蜂巢背景" 
+                 class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-dark bg-opacity-40"></div>
+        </div>
+        
+        <!-- 蜜蜂动画 -->
+        <div class="bee" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%23FFD700%22/><path d=%22M30,30 Q50,10 70,30 Q90,50 70,70 Q50,90 30,70 Q10,50 30,30%22 fill=%22%233E2723%22/><path d=%22M50,10 L50,90%22 stroke=%22%233E2723%22 stroke-width=%225%22/><path d=%22M10,50 L90,50%22 stroke=%22%233E2723%22 stroke-width=%225%22/></svg>');"></div>
+        <div class="bee" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%23FFD700%22/><path d=%22M30,30 Q50,10 70,30 Q90,50 70,70 Q50,90 30,70 Q10,50 30,30%22 fill=%22%233E2723%22/><path d=%22M50,10 L50,90%22 stroke=%22%233E2723%22 stroke-width=%225%22/><path d=%22M10,50 L90,50%22 stroke=%22%233E2723%22 stroke-width=%225%22/></svg>'); animation-delay: -5s;"></div>
+        <div class="bee" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%23FFD700%22/><path d=%22M30,30 Q50,10 70,30 Q90,50 70,70 Q50,90 30,70 Q10,50 30,30%22 fill=%22%233E2723%22/><path d=%22M50,10 L50,90%22 stroke=%22%233E2723%22 stroke-width=%225%22/><path d=%22M10,50 L90,50%22 stroke=%22%233E2723%22 stroke-width=%225%22/></svg>'); animation-delay: -10s;"></div>
+        
+        <div class="container mx-auto px-4 z-10 text-center">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 text-shadow-lg animate-float">
+                蜜语 <span class="text-primary">天然蜂蜜水</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-white mb-8 max-w-2xl mx-auto text-shadow">
+                独特分离设计，拧开盖子，蜂蜜与果汁完美融合，品味自然的甜蜜
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#products" class="bg-primary text-dark font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors text-lg">
+                    探索产品
+                </a>
+                <a href="#about" class="bg-transparent border-2 border-white text-white font-bold py-3 px-8 rounded-full hover:bg-white hover:text-dark transition-colors text-lg">
+                    了解更多
+                </a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-10 left-0 right-0 text-center">
+            <a href="#products" class="text-white animate-bounce-slow inline-block">
+                <i class="fa fa-chevron-down text-2xl"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- 产品展示区 -->
+    <section id="products" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">我们的产品</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    四种口味，天然蜂蜜与新鲜果汁的完美结合，带给您健康美味的饮品体验
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- 柠檬汁蜂蜜水 -->
+                <div class="product-card bg-light rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/ea816339ec774adda2f4731d62ec52f1~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=hGlZ%2FVibTrJBehcFeWbJk1X%2BEbc%3D" 
+                             alt="柠檬汁蜂蜜水" 
+                             class="w-full h-full object-contain p-4">
+                        <div class="absolute top-4 right-4 bg-primary text-dark text-sm font-bold px-3 py-1 rounded-full">
+                            热销
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-dark mb-2">柠檬汁蜂蜜水</h3>
+                        <p class="text-gray-600 mb-4">
+                            新鲜柠檬与天然蜂蜜的清新组合，富含维生素C，提神醒脑
+                        </p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-2xl font-bold text-secondary">¥18.00</span>
+                            <div class="flex items-center">
+                                <button class="quantity-btn decrease-quantity bg-gray-200 text-dark w-8 h-8 rounded-full flex items-center justify-center" data-product-id="1">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <span class="quantity mx-3">1</span>
+                                <button class="quantity-btn increase-quantity bg-gray-200 text-dark w-8 h-8 rounded-full flex items-center justify-center" data-product-id="1">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="add-to-cart-btn w-full bg-primary text-dark py-2 rounded-md hover:bg-opacity-90 transition-colors" data-product-id="1" data-product-name="柠檬汁蜂蜜水" data-product-price="18.00" data-product-image="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/ea816339ec774adda2f4731d62ec52f1~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=hGlZ%2FVibTrJBehcFeWbJk1X%2BEbc%3D">
+                            加入购物车
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 百香果汁蜂蜜水 -->
+                <div class="product-card bg-light rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/68acd8fda4b44fdeab4dc128752ac9b4~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=FGTY8Nt3TpCtGa5YwU8n%2FVdRR2Y%3D" 
+                             alt="百香果汁蜂蜜水" 
+                             class="w-full h-full object-contain p-4">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-dark mb-2">百香果汁蜂蜜水</h3>
+                        <p class="text-gray-600 mb-4">
+                            热带百香果与天然蜂蜜的香甜邂逅，口感丰富，营养均衡
+                        </p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-2xl font-bold text-secondary">¥20.00</span>
+                            <div class="flex items-center">
+                                <button class="quantity-btn decrease-quantity bg-gray-200 text-dark w-8 h-8 rounded-full flex items-center justify-center" data-product-id="2">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <span class="quantity mx-3">1</span>
+                                <button class="quantity-btn increase-quantity bg-gray-200 text-dark w-8 h-8 rounded-full flex items-center justify-center" data-product-id="2">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="add-to-cart-btn w-full bg-primary text-dark py-2 rounded-md hover:bg-opacity-90 transition-colors" data-product-id="2" data-product-name="百香果汁蜂蜜水" data-product-price="20.00" data-product-image="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/68acd8fda4b44fdeab4dc128752ac9b4~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=FGTY8Nt3TpCtGa5YwU8n%2FVdRR2Y%3D">
+                            加入购物车
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 黑加仑汁蜂蜜水 -->
+                <div class="product-card bg-light rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/10ee8e837fb24d26a2c1e0f552bf5f78~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=svz4%2FT2JVf5tJ42ekXFXHG8OjbY%3D" 
+                             alt="黑加仑汁蜂蜜水" 
+                             class="w-full h-full object-contain p-4">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-dark mb-2">黑加仑汁蜂蜜水</h3>
+                        <p class="text-gray-600 mb-4">
+                            富含花青素的黑加仑与天然蜂蜜的完美搭配，抗氧化，美容养颜
+                        </p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-2xl font-bold text-secondary">¥22.00</span>
+                            <div class="flex items-center">
+                                <button class="quantity-btn decrease-quantity bg-gray-200 text-dark w-8 h-8 rounded-full flex items-center justify-center" data-product-id="3">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <span class="quantity mx-3">1</span>
+                                <button class="quantity-btn increase-quantity bg-gray-200 text-dark w-8 h-8 rounded-full flex items-center justify-center" data-product-id="3">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="add-to-cart-btn w-full bg-primary text-dark py-2 rounded-md hover:bg-opacity-90 transition-colors" data-product-id="3" data-product-name="黑加仑汁蜂蜜水" data-product-price="22.00" data-product-image="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/10ee8e837fb24d26a2c1e0f552bf5f78~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=svz4%2FT2JVf5tJ42ekXFXHG8OjbY%3D">
+                            加入购物车
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 青金桔汁蜂蜜水 -->
+                <div class="product-card bg-light rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/51ac7b391ad64321b1479c1ff3c0629f~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=lup%2FFEQHPfKOZmQG%2FCgT%2FhDqhMo%3D" 
+                             alt="青金桔汁蜂蜜水" 
+                             class="w-full h-full object-contain p-4">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-dark mb-2">青金桔汁蜂蜜水</h3>
+                        <p class="text-gray-600 mb-4">
+                            清新青金桔与天然蜂蜜的酸甜平衡，口感清爽，开胃解腻
+                        </p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-2xl font-bold text-secondary">¥19.00</span>
+                            <div class="flex items-center">
+                                <button class="quantity-btn decrease-quantity bg-gray-200 text-dark w-8 h-8 rounded-full flex items-center justify-center" data-product-id="4">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <span class="quantity mx-3">1</span>
+                                <button class="quantity-btn increase-quantity bg-gray-200 text-dark w-8 h-8 rounded-full flex items-center justify-center" data-product-id="4">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="add-to-cart-btn w-full bg-primary text-dark py-2 rounded-md hover:bg-opacity-90 transition-colors" data-product-id="4" data-product-name="青金桔汁蜂蜜水" data-product-price="19.00" data-product-image="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/51ac7b391ad64321b1479c1ff3c0629f~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=lup%2FFEQHPfKOZmQG%2FCgT%2FhDqhMo%3D">
+                            加入购物车
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品动画展示区 -->
+    <section class="py-20 bg-gradient-to-b from-light to-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">独特设计，新鲜体验</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    蜂蜜与水分开储存，拧开盖子，蜂蜜自然流下与果汁混合，随时随地享受新鲜美味
+                </p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+                <div class="w-full md:w-1/2">
+                    <div class="relative w-full max-w-md mx-auto">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/ea816339ec774adda2f4731d62ec52f1~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=hGlZ%2FVibTrJBehcFeWbJk1X%2BEbc%3D" 
+                             alt="蜂蜜水瓶" 
+                             class="w-full h-auto">
+                        <div id="bottle-cap" class="bottle-cap absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-1/4 cursor-pointer">
+                            <!-- 瓶盖区域 -->
+                        </div>
+                        <div id="honey-animation" class="hidden absolute inset-0 flex items-center justify-center">
+                            <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/e16b463a64204b2d97e3a71f0090db67~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514191&x-signature=vvcQiCPOiumbavnrpYYfqVuqK5E%3D" 
+                                 alt="蜂蜜流动动画" 
+                                 class="w-full h-auto">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-2xl font-bold text-dark mb-6">创新分离设计</h3>
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <div class="bg-primary text-dark rounded-full p-2 mr-4 mt-1">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-dark mb-2">保持新鲜</h4>
+                                <p class="text-gray-600">
+                                    蜂蜜与水分开储存，避免营养流失，保持最佳口感
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-primary text-dark rounded-full p-2 mr-4 mt-1">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-dark mb-2">随时饮用</h4>
+                                <p class="text-gray-600">
+                                    拧开盖子，蜂蜜自动流下与果汁混合，随时随地享受新鲜饮品
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-primary text-dark rounded-full p-2 mr-4 mt-1">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-dark mb-2">天然健康</h4>
+                                <p class="text-gray-600">
+                                    精选天然蜂蜜和新鲜果汁，无添加防腐剂，健康饮品首选
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-primary text-dark rounded-full p-2 mr-4 mt-1">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-dark mb-2">环保包装</h4>
+                                <p class="text-gray-600">
+                                    采用可回收材料包装，保护环境，传递绿色生活理念
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <button id="demo-btn" class="mt-8 bg-secondary text-white font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors">
+                        查看演示
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">关于蜜语</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    我们致力于为您提供最天然、最健康的蜂蜜水产品，让您品味自然的甜蜜
+                </p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="w-full md:w-1/2">
+                    <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/b1126ca951954adf8c32e835f571ff98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260331095613D6F37057323F39EB951F&rrcfp=f06b921b&x-expires=1777514187&x-signature=jT6aaoi6gTp3tYeb8a5kA42o4GI%3D" 
+                         alt="蜂巢" 
+                         class="w-full h-auto rounded-xl shadow-lg">
+                </div>
+                
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-2xl font-bold text-dark mb-6">我们的故事</h3>
+                    <p class="text-gray-600 mb-6">
+                        蜜语品牌源于对自然健康生活的追求。我们的创始人在一次乡村旅行中，发现了当地养蜂人的传统蜂蜜采集方式，深受启发。
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        我们与优质养蜂场合作，精选天然成熟蜂蜜，搭配新鲜水果汁，采用创新分离设计，让您随时随地享受最新鲜的蜂蜜水。
+                    </p>
+                    <p class="text-gray-600 mb-8">
+                        我们坚持天然、健康、环保的理念，不添加任何人工色素和防腐剂，为您提供最纯净的饮品体验。
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-light p-6 rounded-lg text-center">
+                            <div class="text-4xl font-bold text-primary mb-2">100%</div>
+                            <p class="text-gray-600">天然蜂蜜</p>
+                        </div>
+                        <div class="bg-light p-6 rounded-lg text-center">
+                            <div class="text-4xl font-bold text-primary mb-2">0</div>
+                            <p class="text-gray-600">人工添加</p>
+                        </div>
+                        <div class="bg-light p-6 rounded-lg text-center">
+                            <div class="text-4xl font-bold text-primary mb-2">50+</div>
+                            <p class="text-gray-600">合作养蜂场</p>
+                        </div>
+                        <div class="bg-light p-6 rounded-lg text-center">
+                            <div class="text-4xl font-bold text-primary mb-2">10万+</div>
+                            <p class="text-gray-600">满意客户</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 -->
+    <section id="contact" class="py-20 bg-light">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">联系我们</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    如有任何问题或建议，欢迎随时联系我们
+                </p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-12">
+                <div class="w-full md:w-1/2">
+                    <form class="bg-white p-8 rounded-xl shadow-lg">
+                        <div class="mb-6">
+                            <label for="name" class="block text-gray-700 font-bold mb-2">姓名</label>
+                            <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div class="mb-6">
+                            <label for="email" class="block text-gray-700 font-bold mb-2">邮箱</label>
+                            <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div class="mb-6">
+                            <label for="subject" class="block text-gray-700 font-bold mb-2">主题</label>
+                            <input type="text" id="subject" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 font-bold mb-2">留言</label>
+                            <textarea id="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-primary text-dark font-bold py-3 px-6 rounded-md hover:bg-opacity-90 transition-colors">
+                            发送留言
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="w-full md:w-1/2">
+                    <div class="bg-white p-8 rounded-xl shadow-lg h-full">
+                        <h3 class="text-2xl font-bold text-dark mb-6">联系方式</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-primary text-dark rounded-full p-3 mr-4">
+                                    <i class="fa fa-map-marker"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-dark mb-1">地址</h4>
+                                    <p class="text-gray-600">
+                                        北京市朝阳区建国路88号蜜语大厦
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-primary text-dark rounded-full p-3 mr-4">
+                                    <i class="fa fa-phone"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-dark mb-1">电话</h4>
+                                    <p class="text-gray-600">
+                                        400-123-4567
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-primary text-dark rounded-full p-3 mr-4">
+                                    <i class="fa fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-dark mb-1">邮箱</h4>
+                                    <p class="text-gray-600">
+                                        info@honeytalk.com
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-primary text-dark rounded-full p-3 mr-4">
+                                    <i class="fa fa-clock-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-dark mb-1">营业时间</h4>
+                                    <p class="text-gray-600">
+                                        周一至周五: 9:00 - 18:00<br>
+                                        周六至周日: 10:00 - 16:00
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <h4 class="text-lg font-bold text-dark mb-4">关注我们</h4>
+                            <div class="flex space-x-4">
+                                <a href="#" class="bg-primary text-dark w-10 h-10 rounded-full flex items-center justify-center hover:bg-opacity-90 transition-colors">
+                                    <i class="fa fa-weixin"></i>
+                                </a>
+                                <a href="#" class="bg-primary text-dark w-10 h-10 rounded-full flex items-center justify-center hover:bg-opacity-90 transition-colors">
+                                    <i class="fa fa-weibo"></i>
+                                </a>
+                                <a href="#" class="bg-primary text-dark w-10 h-10 rounded-full flex items-center justify-center hover:bg-opacity-90 transition-colors">
+                                    <i class="fa fa-instagram"></i>
+                                </a>
+                                <a href="#" class="bg-primary text-dark w-10 h-10 rounded-full flex items-center justify-center hover:bg-opacity-90 transition-colors">
+                                    <i class="fa fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <i class="fa fa-leaf text-primary text-2xl mr-2"></i>
+                        <span class="text-2xl font-bold">蜜语</span>
+                    </div>
+                    <p class="text-gray-400 mb-6">
+                        天然蜂蜜水，健康生活的选择
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fa fa-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6">快速链接</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-gray-400 hover:text-primary transition-colors">首页</a></li>
+                        <li><a href="#products" class="text-gray-400 hover:text-primary transition-colors">产品</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-primary transition-colors">关于我们</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-primary transition-colors">联系我们</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6">产品系列</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">柠檬汁蜂蜜水</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">百香果汁蜂蜜水</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">黑加仑汁蜂蜜水</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">青金桔汁蜂蜜水</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">定制礼盒</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6">联系我们</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fa fa-map-marker text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-400">北京市朝阳区建国路88号蜜语大厦</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-phone text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-400">400-123-4567</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-envelope text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-400">info@honeytalk.com</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-clock-o text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-400">周一至周五: 9:00 - 18:00</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+                <p class="text-gray-400">
+                    &copy; 2025 蜜语食品有限公司. 保留所有权利.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 结算弹窗 -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-dark">结算</h2>
+                <button id="close-checkout" class="text-gray-500 hover:text-dark">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-6">
+                <label for="checkout-name" class="block text-gray-700 font-bold mb-2">姓名</label>
+                <input type="text" id="checkout-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <div class="mb-6">
+                <label for="checkout-phone" class="block text-gray-700 font-bold mb-2">电话</label>
+                <input type="tel" id="checkout-phone" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <div class="mb-6">
+                <label for="checkout-address" class="block text-gray-700 font-bold mb-2">地址</label>
+                <textarea id="checkout-address" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 font-bold mb-2">支付方式</label>
+                <div class="flex space-x-4">
+                    <label class="flex items-center">
+                        <input type="radio" name="payment" value="wechat" class="mr-2">
+                        <span>微信支付</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="payment" value="alipay" class="mr-2">
+                        <span>支付宝</span>
+                    </label>
+                </div>
+            </div>
+            <div class="flex justify-between mb-6">
+                <span class="font-bold">总计:</span>
+                <span id="checkout-total" class="font-bold">¥0.00</span>
+            </div>
+            <button id="pay-btn" class="w-full bg-primary text-dark py-3 rounded-md hover:bg-opacity-90 transition-colors">
+                确认支付
+            </button>
+        </div>
+    </div>
+
+    <!-- 支付成功弹窗 -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa fa-check text-green-500 text-4xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-dark mb-4">支付成功</h2>
+            <p class="text-gray-600 mb-6">
+                感谢您的购买！我们将尽快为您发货。
+            </p>
+            <button id="close-success" class="bg-primary text-dark py-2 px-6 rounded-md hover:bg-opacity-90 transition-colors">
+                确定
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 初始化GSAP动画
+        document.addEventListener('DOMContentLoaded', function() {
+            // 注册ScrollTrigger插件
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // 页面滚动动画
+            gsap.utils.toArray('.product-card').forEach((card, i) => {
+                gsap.from(card, {
+                    y: 50,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top bottom-=100",
+                        toggleActions: "play none none none"
+                    },
+                    delay: i * 0.1
+                });
+            });
+            
+            // 关于我们部分动画
+            gsap.from('#about img', {
+                x: -50,
+                opacity: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: '#about',
+                    start: "top bottom-=100"
+                }
+            });
+            
+            gsap.from('#about .w-full.md\\:w-1\\/2:last-child', {
+                x: 50,
+                opacity: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: '#about',
+                    start: "top bottom-=100"
+                }
+            });
+        });
+
+        // 移动端菜单
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // 购物车功能
+        const cartBtn = document.getElementById('cart-btn');
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const closeCart = document.getElementById('close-cart');
+        const cartItems = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+        const cartTotal = document.getElementById('cart-total');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        
+        // 结算弹窗
+        const checkoutModal = document.getElementById('checkout-modal');
+        const closeCheckout = document.getElementById('close-checkout');
+        const checkoutTotal = document.getElementById('checkout-total');
+        const payBtn = document.getElementById('pay-btn');
+        
+        // 支付成功弹窗
+        const successModal = document.getElementById('success-modal');
+        const closeSuccess = document.getElementById('close-success');
+        
+        // 产品数量调整
+        const decreaseBtns = document.querySelectorAll('.decrease-quantity');
+        const increaseBtns = document.querySelectorAll('.increase-quantity');
+        const quantities = document.querySelectorAll('.quantity');
+        
+        decreaseBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+                const quantityElement = this.parentElement.querySelector('.quantity');
+                let quantity = parseInt(quantityElement.textContent);
+                
+                if (quantity > 1) {
+                    quantity--;
+                    quantityElement.textContent = quantity;
+                }
+            });
+        });
+        
+        increaseBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+                const quantityElement = this.parentElement.querySelector('.quantity');
+                let quantity = parseInt(quantityElement.textContent);
+                
+                quantity++;
+                quantityElement.textContent = quantity;
+            });
+        });
+        
+        // 购物车数据
+        let cart = [];
+        
+        // 添加到购物车
+        const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+        
+        addToCartBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+                const productName = this.dataset.productName;
+                const productPrice = parseFloat(this.dataset.productPrice);
+                const productImage = this.dataset.productImage;
+                const quantityElement = this.parentElement.querySelector('.quantity');
+                const quantity = parseInt(quantityElement.textContent);
+                
+                // 检查购物车中是否已有该商品
+                const existingItem = cart.find(item => item.id === productId);
+                
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    cart.push({
+                        id: productId,
+                        name: productName,
+                        price: productPrice,
+                        image: productImage,
+                        quantity: quantity
+                    });
+                }
+                
+                // 更新购物车
+                updateCart();
+                
+                // 显示购物车
+                cartSidebar.classList.remove('translate-x-full');
+                
+                // 重置数量
+                quantityElement.textContent = '1';
+                
+                // 添加动画效果
+                this.classList.add('bg-green-500');
+                this.textContent = '已添加';
+                
+                setTimeout(() => {
+                    this.classList.remove('bg-green-500');
+                    this.textContent = '加入购物车';
+                }, 1500);
+            });
+        });
+        
+        // 更新购物车
+        function updateCart() {
+            // 更新购物车数量
+            cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+            
+            // 更新购物车总价
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotal.textContent = `¥${total.toFixed(2)}`;
+            checkoutTotal.textContent = `¥${total.toFixed(2)}`;
+            
+            // 更新购物车商品列表
+            if (cart.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+                cartItems.innerHTML = '';
+                cartItems.appendChild(emptyCartMessage);
+            } else {
+                emptyCartMessage.classList.add('hidden');
+                cartItems.innerHTML = '';
+                
+                cart.forEach(item => {
+                    const cartItemElement = document.createElement('div');
+                    cartItemElement.className = 'flex items-center border-b pb-4 mb-4';
+                    cartItemElement.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md mr-4">
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-dark">${item.name}</h4>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-secondary">¥${item.price.toFixed(2)}</span>
+                                <div class="flex items-center">
+                                    <button class="cart-decrease bg-gray-200 text-dark w-6 h-6 rounded-full flex items-center justify-center" data-product-id="${item.id}">
+                                        <i class="fa fa-minus text-xs"></i>
+                                    </button>
+                                    <span class="mx-2">${item.quantity}</span>
+                                    <button class="cart-increase bg-gray-200 text-dark w-6 h-6 rounded-full flex items-center justify-center" data-product-id="${item.id}">
+                                        <i class="fa fa-plus text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="cart-remove text-gray-400 hover:text-red-500 ml-2" data-product-id="${item.id}">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    `;
+                    
+                    cartItems.appendChild(cartItemElement);
+                });
+                
+                // 添加购物车中商品数量调整事件
+                document.querySelectorAll('.cart-decrease').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const productId = this.dataset.productId;
+                        const item = cart.find(item => item.id === productId);
+                        
+                        if (item.quantity > 1) {
+                            item.quantity--;
+                        } else {
+                            cart = cart.filter(item => item.id !== productId);
+                        }
+                        
+                        updateCart();
+                    });
+                });
+                
+                document.querySelectorAll('.cart-increase').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const productId = this.dataset.productId;
+                        const item = cart.find(item => item.id === productId);
+                        
+                        item.quantity++;
+                        updateCart();
+                    });
+                });
+                
+                // 添加购物车中商品删除事件
+                document.querySelectorAll('.cart-remove').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const productId = this.dataset.productId;
+                        cart = cart.filter(item => item.id !== productId);
+                        
+                        updateCart();
+                    });
+                });
+            }
+        }
+        
+        // 购物车侧边栏控制
+        cartBtn.addEventListener('click', function() {
+            cartSidebar.classList.remove('translate-x-full');
+        });
+        
+        closeCart.addEventListener('click', function() {
+            cartSidebar.classList.add('translate-x-full');
+        });
+        
+        // 结算功能
+        checkoutBtn.addEventListener('click', function() {
+            if (cart.length > 0) {
+                checkoutModal.classList.remove('hidden');
+                cartSidebar.classList.add('translate-x-full');
+            }
+        });
+        
+        closeCheckout.addEventListener('click', function() {
+            checkoutModal.classList.add('hidden');
+        });
+        
+        // 支付功能
+        payBtn.addEventListener('click', function() {
+            const name = document.getElementById('checkout-name').value;
+            const phone = document.getElementById('checkout-phone').value;
+            const address = document.getElementById('checkout-address').value;
+            const payment = document.querySelector('input[name="payment"]:checked');
+            
+            if (!name || !phone || !address || !payment) {
+                alert('请填写完整的订单信息');
+                return;
+            }
+            
+            // 模拟支付过程
+            checkoutModal.classList.add('hidden');
+            successModal.classList.remove('hidden');
+            
+            // 清空购物车
+            cart = [];
+            updateCart();
+        });
+        
+        closeSuccess.addEventListener('click', function() {
+            successModal.classList.add('hidden');
+        });
+        
+        // 产品动画演示
+        const bottleCap = document.getElementById('bottle-cap');
+        const honeyAnimation = document.getElementById('honey-animation');
+        const demoBtn = document.getElementById('demo-btn');
+        
+        function showHoneyAnimation() {
+            bottleCap.style.transform = 'rotate(45deg)';
+            honeyAnimation.classList.remove('hidden');
+            
+            setTimeout(() => {
+                bottleCap.style.transform = 'rotate(0)';
+                honeyAnimation.classList.add('hidden');
+            }, 3000);
+        }
+        
+        bottleCap.addEventListener('click', showHoneyAnimation);
+        demoBtn.addEventListener('click', showHoneyAnimation);
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 如果是移动端，点击后关闭菜单
+                    if (window.innerWidth < 768) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
