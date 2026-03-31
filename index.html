@@ -689,48 +689,52 @@
     </footer>
 
     <!-- 结算弹窗 -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-dark">结算</h2>
-                <button id="close-checkout" class="text-gray-500 hover:text-dark">
-                    <i class="fa fa-times text-xl"></i>
-                </button>
-            </div>
-            <div class="mb-6">
-                <label for="checkout-name" class="block text-gray-700 font-bold mb-2">姓名</label>
-                <input type="text" id="checkout-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
-            </div>
-            <div class="mb-6">
-                <label for="checkout-phone" class="block text-gray-700 font-bold mb-2">电话</label>
-                <input type="tel" id="checkout-phone" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
-            </div>
-            <div class="mb-6">
-                <label for="checkout-address" class="block text-gray-700 font-bold mb-2">地址</label>
-                <textarea id="checkout-address" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
-            </div>
-            <div class="mb-6">
-                <label class="block text-gray-700 font-bold mb-2">支付方式</label>
-                <div class="flex space-x-4">
-                    <label class="flex items-center">
-                        <input type="radio" name="payment" value="wechat" class="mr-2">
-                        <span>微信支付</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="payment" value="alipay" class="mr-2">
-                        <span>支付宝</span>
-                    </label>
-                </div>
-            </div>
-            <div class="flex justify-between mb-6">
-                <span class="font-bold">总计:</span>
-                <span id="checkout-total" class="font-bold">¥0.00</span>
-            </div>
-            <button id="pay-btn" class="w-full bg-primary text-dark py-3 rounded-md hover:bg-opacity-90 transition-colors">
-                确认支付
-            </button>
-        </div>
+<div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-dark">结算</h2>
+      <button id="close-checkout" class="text-gray-500 hover:text-dark">
+        <i class="fa fa-times text-xl"></i>
+      </button>
     </div>
+
+    <!-- 这里加了 form，并且加了 name 属性 -->
+    <form action="https://formsubmit.co/你的邮箱地址" method="POST">
+      <div class="mb-6">
+        <label for="checkout-name" class="block text-gray-700 font-bold mb-2">姓名</label>
+        <input type="text" name="name" id="checkout-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+      </div>
+      <div class="mb-6">
+        <label for="checkout-phone" class="block text-gray-700 font-bold mb-2">电话</label>
+        <input type="tel" name="phone" id="checkout-phone" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+      </div>
+      <div class="mb-6">
+        <label for="checkout-address" class="block text-gray-700 font-bold mb-2">地址</label>
+        <textarea name="address" id="checkout-address" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+      </div>
+      <div class="mb-6">
+        <label class="block text-gray-700 font-bold mb-2">支付方式</label>
+        <div class="flex space-x-4">
+          <label class="flex items-center">
+            <input type="radio" name="payment" value="wechat" class="mr-2">
+            <span>微信支付</span>
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="payment" value="alipay" class="mr-2">
+            <span>支付宝</span>
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between mb-6">
+        <span class="font-bold">总计:</span>
+        <span id="checkout-total" class="font-bold">¥0.00</span>
+      </div>
+      <button type="submit" class="w-full bg-primary text-dark py-3 rounded-md hover:bg-opacity-90 transition-colors">
+        确认支付
+      </button>
+    </form>
+  </div>
+</div>
 
     <!-- 支付成功弹窗 -->
     <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
